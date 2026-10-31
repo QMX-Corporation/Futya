@@ -1,0 +1,20 @@
+Futya
+------
+
+Futya is a Low-Level and Efficient Operating System to ARM64, written in Assembly, C, C++, Java and JavaScript.
+
+1. GITHUB 
+Please fork the QMX-Corporation/Futya and, clone (git clone).
+
+2. SEE THE CODE 
+Please see the code, after modify the code.
+
+3. COMMIT, PUSH 
+After modify, please commit (git commit) and push (git push origin main or your branch).
+
+4. PullRequest();
+Entry in Site (https://github.com/QMX-Corporation/Futya) and click in "Contribute with project" -> after, click in 
+"Open Pull Request".
+
+5. WAITING 
+Wait me or others maintainers/reviewers review and reject/accept the code.

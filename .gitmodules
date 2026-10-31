@@ -1,0 +1,10 @@
+# .gitmodules
+# SPDX-License-Identifier: GPL-2.0-only
+
+[submodule "qemu"]
+	path = qemu
+	url = https://github.com/qemu/qemu
+
+[submodule "googletest"]
+	path = googletest
+	url = https://github.com/google/googletest

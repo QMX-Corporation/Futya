@@ -1,0 +1,22 @@
+# .azurepipelines/templates/build-kernel.yml
+# SPDX-License-Identifier: GPL-2.0-only
+
+steps:
+  - script: |
+      make clean
+      make -j$(nproc)
+    displayName: 'Execute Parallel AArch64 Production Cross-Compilation'
+
+  - task: CopyFiles@2
+    displayName: 'Stage Target Production Binaries'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/build'
+      Contents: '**/*.elf'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Production Kernel Artifacts'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'futya-core-release'
+      publishLocation: 'Container'

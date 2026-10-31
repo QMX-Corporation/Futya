@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+Futya OS - Project Governance Model
+===============================================================================
+This document defines the decision-making framework and operational leadership
+structure for the Futya OS project.
+
+1. LEADERSHIP MODEL (BDFL)
+-------------------------------------------------------------------------------
+The Futya OS project operates under the Benevolent Dictator for Life (BDFL)
+governance model, mirroring the historical structure of the Linux kernel.
+
+- Project BDFL: Joao Guilherme da Silva Freitas Lima <joaoanandalima@gmail.com>
+
+The BDFL holds absolute authority and final decision-making power over all
+aspects of the project, including but not limited to:
+- Kernel architecture definition and low-level specifications.
+- Acceptance or rejection of code patches, subsystems, and pull requests.
+- Licensing enforcement, repository access, and release schedules.
+
+2. SUB-SYSTEM MAINTAINERS
+-------------------------------------------------------------------------------
+The BDFL may designate specific Maintainers to oversee isolated components of
+the system (e.g., MMU, Scheduler, Java VM Runtime, JavaScript API Bridge).
+- Maintainers review incoming technical submissions for code cleanliness,
+  performance bounds, and test-suite compliance.
+- All decisions made by sub-system maintainers are subject to final veto or
+  override by the BDFL.
+
+3. TECHNICAL DISPUTE RESOLUTION
+-------------------------------------------------------------------------------
+In the event of conflicts regarding design choices, resource handling, or API
+implementations, the resolution path is strictly linear:
+1. Technical debate driven by benchmark data and QEMU telemetry results.
+2. Maintainer review within the affected sub-system.
+3. Final arbitration and definitive ruling by the BDFL.

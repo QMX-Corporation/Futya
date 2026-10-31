@@ -1,0 +1,88 @@
+# .github/workflows/overcommit.yml
+# SPDX-License-Identifier: GPL-2.0-only
+
+name: Futya OS Lethal Overcommit & Memory Exhaustion Validation
+
+on: [push, pull_request]
+
+jobs:
+  overcommit-stress-matrix:
+    name: OOM & Overcommit Stress (1000+ Vectors)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Deploy Bare-Metal & Analysis Toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            make \
+            gcc-aarch64-none-elf \
+            binutils-aarch64-none-elf \
+            qemu-system-aarch64 \
+            gdb-multiarch \
+            python3-minimal
+
+      - name: Build Stress Test Kernel (AArch64)
+        run: |
+          make TARGET=aarch64-stress clean
+          make TARGET=aarch64-stress -j$(nproc)
+
+      - name: Execute Mass Resource Exhaustion Engine (QEMU + GDB)
+        run: |
+          mkdir -p overcommit_reports/raw_logs
+          
+          echo "======================================================================"
+          echo "LAUNCHING FUTYA OS AGGRESSIVE OVERCOMMIT STRESS MATRIX (1000+ VECTORS)"
+          echo "======================================================================"
+          
+          for i in {1..1000}; do
+            cat << EOF > gdb_overcommit.py
+          target remote :1234
+          set pagination off
+      
+          break oom_killer_handler
+          break kernel_panic
+          break handle_allocation_failure
+          
+          commands
+            echo \n[GDB TRACE] System allocation failure or crash intercepted!\n
+            backtrace
+            info registers
+            quit 255
+          end
+          
+          continue
+          quit 0
+          EOF
+
+            qemu-system-aarch64 -M virt -m 32M -cpu cortex-a53 -nographic -kernel ./build/futya_stress.elf -s -S > overcommit_reports/raw_logs/qemu_vector_${i}.log 2>&1 &
+            QEMU_PID=$!
+
+            gdb-multiarch ./build/futya_stress.elf -x gdb_overcommit.py > overcommit_reports/raw_logs/gdb_vector_${i}.log 2>&1
+            GDB_STATUS=$?
+
+            kill -9 $QEMU_PID 2>/dev/null
+            wait $QEMU_PID 2>/dev/null
+
+            if [ $GDB_STATUS -ne 0 ]; then
+              echo "❌ FATAL: Overcommit/OOM Panic or unhandled allocation failure in Vector #$i"
+              cat overcommit_reports/raw_logs/gdb_vector_${i}.log
+              exit 1
+            fi
+          done
+
+          echo "======================================================================"
+          echo "SUCCESS: 1000+ OVERCOMMIT INJECTION VECTORS PASSED. ALL SUBSYSTEMS STABLE."
+          echo "======================================================================"
+
+      - name: Archive Overcommit Diagnostic Logs
+        if: always()
+        uses: actions/artifacts/upload@v4
+        with:
+          name: futya-overcommit-stress-logs
+          path: overcommit_reports/

@@ -1,0 +1,47 @@
+# .dockerignore
+# SPDX-License-Identifier: GPL-2.0-only
+
+# Git Version Control
+.git
+.gitmodules
+.github
+.gitignore
+.gitattributes 
+.editorconfig
+
+# Files Maintained
+CHANGELOG.rst 
+CONTRIBUTING 
+GOVERNANCE 
+LICENSE 
+MAINTAINERS 
+README 
+ROADMAP.rst
+ 
+# CI/CD Systems
+.azurepipelines
+
+# Build Outputs and Temporaries
+build/
+bin/
+obj/
+*.o
+*.elf
+*.bin
+*.img
+*.iso
+
+# Diagnostic and Test Reports
+test_reports/
+overcommit_reports/
+page_fault_reports/
+cluster_reports/
+*.log
+
+# Editor and IDE Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store

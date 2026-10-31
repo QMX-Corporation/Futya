@@ -1,0 +1,17 @@
+{
+    "name": "Futya ARM Operating System - Container",
+    "dockerFile": "Dockerfile",
+    "build": {
+        "extensions": [
+           "ms-vscode.cpptools-themes",
+           "ms-vscode.cpptools-extension-pack",
+           "ms-vscode.cpp-devtools",
+           "ms-vscode.hexeditor",
+           "vscjava.vscode-gradle",
+           "vscjava.vscode-java-pack",
+           "microhobby.linuxkerneldev",
+           "ms-vscode.makefile-tools"
+        ]
+    },
+    "rootUser": "root"
+}

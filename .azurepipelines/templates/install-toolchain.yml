@@ -1,0 +1,11 @@
+# .azurepipelines/templates/install-toolchain.yml
+# SPDX-License-Identifier: GPL-2.0-only
+
+steps:
+  - script: |
+      sudo apt-get update
+      sudo apt-get install -y --no-install-recommends \
+        make \
+        gcc-aarch64-none-elf \
+        binutils-aarch64-none-elf
+    displayName: 'Install Embedded AArch64 Cross-Compiler and Build Tools'

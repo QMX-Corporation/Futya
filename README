@@ -1,0 +1,43 @@
+Futya
+======
+
+Futya is a Low-Level and a Efficient Operating System for ARM64 Arch, written in Assembly, C, C++, Java and JavaScript.
+
+Quick Start
+------------
+Find your first start:
+  * LLM or AI Assistant: See Documentation/AI-LLM/coding-assistant.
+  * Core Assembly Developer: See Arch/
+  * Kernel Developer: See Arch/Kernel/
+  * Learning code bare-metal: Shut up, show me code.
+  * See SubModules: qemu/, googletest/ or .gitmodules.
+  * GOVERNANCE: See GOVERNANCE.
+  * License: See LICENSE.
+  * ROADMAP and Changelog: See ROADMAP.rst and CHANGELOG.rst.
+  * Contributing: See CONTRIBUTING
+  * Build: See .azurepipelines/, .devcontainer/ or .github/.
+  * Docker: See .devcontainer/ or .dockerignore.
+  * View Maintainers: See MAINTAINERS.
+  * Git: See .gitattributes, .gitignore or .gitmodules.
+  * Editor: See .editorconfig
+
+Who Are You?
+-------------
+Find your role below:
+  * Core Assembly Developer,
+  * LLM or AI,
+  * Human helped per AI/LLM,
+  * Learning bare-metal code,
+  * See Git Roles,
+  * See Build Compilation,
+  * and others.
+
+License
+-------
+Futya is licensed under GPLv2. See LICENSE for more details.
+
+Support
+--------
+See support:
+  * BDFL Contact: <joaoanandalima@gmail.com>
+  * QMX Corporation (Github Discussions): https://github.com/QMX-Corporation/discussions.

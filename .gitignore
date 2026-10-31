@@ -1,0 +1,37 @@
+# .gitignore
+# SPDX-License-Identifier: GPL-2.0-only
+
+# Local build artifacts and raw binaries
+build/
+bin/
+obj/
+*.o
+*.elf
+*.bin
+*.img
+*.iso
+
+# Automated stress and test matrix reports
+test_reports/
+overcommit_reports/
+page_fault_reports/
+cluster_reports/
+*.log
+
+# GDB dynamic scripts and core dumps
+gdb_script.py
+gdb_overcommit.py
+gdb_page_fault.py
+gdb_cluster.py
+vgcore.*
+core
+
+# VS Code and environment state
+.vscode/
+.vscode-test/
+.history/
+.devcontainer/local-features/
+
+# Operating system and desktop metadata leftovers
+.DS_Store
+Thumbs.db

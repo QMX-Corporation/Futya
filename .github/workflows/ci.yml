@@ -1,0 +1,30 @@
+# .github/workflows/ci.yml
+# SPDX-License-Identifier: GPL-2.0-only
+
+name: Futya OS CI
+
+on: [push, pull_request]
+
+jobs:
+  build-kernel:
+    name: Cross-Compile Futya Kernel (AArch64)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Toolchain and Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            make \
+            gcc-aarch64-none-elf \
+            binutils-aarch64-none-elf
+
+      - name: Compile Target
+        run: |
+          make clean
+          make -j$(nproc)

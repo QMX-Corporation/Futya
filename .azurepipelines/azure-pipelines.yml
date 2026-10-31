@@ -1,0 +1,21 @@
+# .azurepipelines/azure-pipelines.yml
+# SPDX-License-Identifier: GPL-2.0-only
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Build_And_Export
+    displayName: 'AArch64 Production Build Stage'
+    jobs:
+      - job: Compile_Kernel
+        displayName: 'Cross-Compile Production Binary'
+        steps:
+          - template: templates/install-toolchain.yml
+          - template: templates/build-kernel.yml

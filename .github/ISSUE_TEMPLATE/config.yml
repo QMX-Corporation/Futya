@@ -1,0 +1,9 @@
+# .github/ISSUE_TEMPLATE/config.yml
+# SPDX-License-Identifier: GPL-2.0-only
+
+blank_issues_enabled: false
+
+contact_links:
+  - name: "💬 Technical Architecture Discussions"
+    url: "https://github.com/QMX-Corporation/discussions"
+    about: "Propose high-level design patterns, request community support, or discuss the AArch64 kernel roadmap without opening an issue."

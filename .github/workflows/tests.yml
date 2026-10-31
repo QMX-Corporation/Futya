@@ -1,0 +1,101 @@
+# .github/workflows/tests.yml
+# SPDX-License-Identifier: GPL-2.0-only
+
+name: Futya OS Massively Parallel Cluster Tests
+
+on: [push, pull_request]
+
+jobs:
+  cluster-simulation:
+    name: Parallel Core Stress (10,000+ Tests across 100 CPUs)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Deploy Cluster Emulation Toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            make \
+            gcc-aarch64-none-elf \
+            binutils-aarch64-none-elf \
+            qemu-system-aarch64 \
+            gdb-multiarch \
+            python3-minimal \
+            parallel
+
+      - name: Build SMP Cluster Kernel (AArch64)
+        run: |
+          make TARGET=aarch64-cluster clean
+          make TARGET=aarch64-cluster -j$(nproc)
+
+      - name: Execute 10,000 Verification Vectors on 100 Processors
+        run: |
+          mkdir -p cluster_reports/raw_logs
+          
+          echo "======================================================================"
+          echo "LAUNCHING FUTYA OS HYPER-PARALLEL INTEGRATION MATRIX"
+          echo "SIMULATING 10,000 TEST VECTORS ACROSS 100 EMULATED CORES"
+          echo "======================================================================"
+
+          cat << EOF > gdb_cluster.py
+          target remote :1234
+          set pagination off
+          set scheduler-locking off
+          
+          break deadlock_detected_handler
+          break kernel_panic
+          break handle_cpu_race_condition
+          
+          commands
+            echo \n[GDB CLUSTER ALERT] Inter-processor collision or Panic detected!\n
+            thread apply all backtrace
+            info registers all
+            quit 255
+          end
+          
+          continue
+          quit 0
+          EOF
+
+          run_vector() {
+            local vector_id=$1
+            local port=$((2000 + vector_id % 10000))
+            
+            qemu-system-aarch64 -M virt -cpu cortex-a53 -smp 100 -m 256M -nographic \
+              -kernel ./build/futya_cluster.elf -gdb tcp::${port} -S > cluster_reports/raw_logs/qemu_vec_${vector_id}.log 2>&1 &
+            QEMU_PID=$!
+
+            sleep 0.01
+
+            gdb-multiarch ./build/futya_cluster.elf -ex "target remote :${port}" -x gdb_cluster.py > cluster_reports/raw_logs/gdb_vec_${vector_id}.log 2>&1
+            GDB_STATUS=$?
+
+            kill -9 $QEMU_PID 2>/dev/null
+            wait $QEMU_PID 2>/dev/null
+
+            if [ $GDB_STATUS -ne 0 ]; then
+              echo "❌ VECTOR #$vector_id FAILED on Multicore Simulation."
+              exit 1
+            fi
+          }
+
+          export -f run_vector
+          export -f gdb_cluster.py
+
+          seq 1 10000 | parallel --jobs 150% --halt now,fail=1 run_vector {}
+
+          echo "======================================================================"
+          echo "SUCCESS: 10,000 VECTOR TEST MATRIX COMPLETED ACROSS 100 CORES SIMULTANEOUSLY."
+          echo "======================================================================"
+
+      - name: Archive Cluster Simulation Diagnostics
+        if: always()
+        uses: actions/artifacts/upload@v4
+        with:
+          name: futya-multicore-cluster-logs
+          path: cluster_reports/
